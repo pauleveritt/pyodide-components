@@ -1,8 +1,9 @@
 import {loadPyodide} from "./pyodide/pyodide.mjs";
 
+
 export async function initialize() {
     let loaderContent;
-    const pyodide = await loadPyodide();
+    self.pyodide = await loadPyodide();
     const response = await fetch("./__init__.py");
     if (response.ok) {
         loaderContent = await response.text();
@@ -10,4 +11,12 @@ export async function initialize() {
         console.log("Failed to fetch loader.py");
     }
     return pyodide;
+}
+
+export async function dispatcher({messageType, messageValue}) {
+    if (messageType === "initialize") {
+        await initialize();
+        return {messageType: "initialized"};
+    }
+    throw `No message handler for "${messageType}"`;
 }
