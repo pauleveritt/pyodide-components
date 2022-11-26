@@ -3,7 +3,9 @@ import {loadPyodide} from "./pyodide/pyodide.mjs";
 
 export async function initialize() {
     let loaderContent;
-    self.pyodide = await loadPyodide();
+    if (!self.pyodide) {
+        self.pyodide = await loadPyodide();
+    }
     const response = await fetch("./__init__.py");
     if (response.ok) {
         loaderContent = await response.text();
