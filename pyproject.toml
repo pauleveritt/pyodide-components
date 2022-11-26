@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyodide_components"
+version = "0.0.1"
+requires-python = ">=3.10"
+license = {text = "BSD 3-Clause License"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "sphinx",
+    "myst-parser",
+    "furo",
+    "pytest",
+    "playwright",
+    "html5lib",
+    "pytest-playwright",
+    "starlette",
+    "uvicorn",
+    "watchfiles",
+    "anyio",
+    "httpx"
+]
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers"

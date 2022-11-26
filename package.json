@@ -1,0 +1,19 @@
+{
+  "name": "pyodide-components",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite serve src/pyodide_components/",
+    "build": "vite build --outDir=../../dist src/pyodide_components/",
+    "preview": "vite preview",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "vite": "^3.2.3"
+  },
+  "dependencies": {
+    "@vitest/ui": "^0.25.3",
+    "vitest": "^0.25.3"
+  }
+}
