@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@vitest/ui": "^0.25.3",
-    "node-fetch": "^3.3.0",
     "vitest": "^0.25.3"
   }
 }

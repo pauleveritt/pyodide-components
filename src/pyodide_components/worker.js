@@ -1,6 +1,7 @@
 import {loadPyodide} from "./pyodide/pyodide.mjs";
 
 export async function initialize() {
+    let loaderContent;
     const pyodide = await loadPyodide();
     const response = await fetch("./__init__.py");
     if (response.ok) {
