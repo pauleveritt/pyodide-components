@@ -22,3 +22,12 @@ export async function dispatcher({messageType, messageValue}) {
     }
     throw `No message handler for "${messageType}"`;
 }
+
+self.onmessage = async (e) => {
+    // Unpack the message structure early to get early failure.
+    const {messageType, messageValue} = e.data;
+    const responseMessage = await dispatcher({messageType, messageValue});
+    if (responseMessage) {
+        self.postMessage(responseMessage);
+    }
+};

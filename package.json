@@ -7,7 +7,7 @@
     "dev": "vite serve src/pyodide_components/",
     "build": "vite build --outDir=../../dist src/pyodide_components/",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest --ui"
   },
   "devDependencies": {
     "happy-dom": "^7.7.0",

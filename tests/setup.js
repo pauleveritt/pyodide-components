@@ -24,3 +24,7 @@ export async function mockFetch(url) {
 }
 
 vi.stubGlobal("fetch", mockFetch);
+
+if (!globalThis["worker"]) {
+    self.postMessage = vi.fn();
+}

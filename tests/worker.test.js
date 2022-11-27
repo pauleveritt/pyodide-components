@@ -1,5 +1,5 @@
-import {beforeEach, expect, test} from "vitest";
-import {initialize, dispatcher} from "../src/pyodide_components/worker.js";
+import {beforeEach, expect, test, vi} from "vitest";
+import {dispatcher} from "../src/pyodide_components/worker.js";
 import {loadPyodide} from "../src/pyodide_components/pyodide/pyodide.mjs";
 
 // Make an interpreter and capture its startup state
@@ -36,3 +36,17 @@ test("processes an initialize message", async () => {
     expect(result.messageType).to.equal("initialized");
 });
 
+test("handles incoming messages with onmessage", async () => {
+    expect(self.onmessage).to.exist;
+    expect(self.postMessage).to.exist;
+
+    // Make a fake worker message
+    const event = new MessageEvent("message");
+    event.data = {messageType: "initialize", messageValue: null};
+
+    // Spy on self.postMessage, then call our handler
+    const spy = vi.spyOn(self, "postMessage");
+    await self.onmessage(event);
+
+    expect(spy).toHaveBeenCalledWith({messageType: "initialized"});
+});
