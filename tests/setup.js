@@ -25,6 +25,11 @@ export async function mockFetch(url) {
 
 vi.stubGlobal("fetch", mockFetch);
 
+const MockWorker = vi.fn(() => ({
+    postMessage: vi.fn(),
+}));
+
 if (!globalThis["worker"]) {
+    vi.stubGlobal("Worker", MockWorker);
     self.postMessage = vi.fn();
 }

@@ -1,6 +1,8 @@
 import {expect, test} from "vitest";
-import {PYODIDE_COMPONENTS} from "../src/pyodide_components/main.js";
+import {worker} from "../src/pyodide_components/main.js";
 
-test("Hello", () => {
-    expect(PYODIDE_COMPONENTS).to.equal("Hello");
+
+test("Worker initialization", () => {
+    expect(Worker).to.exist;
+    expect(worker.postMessage).to.exist;
 });

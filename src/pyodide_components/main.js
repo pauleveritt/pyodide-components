@@ -1,1 +1,1 @@
-export const PYODIDE_COMPONENTS = "Hello";
+export const worker = new Worker("worker.js", {type: "module"});
