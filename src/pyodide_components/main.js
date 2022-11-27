@@ -18,6 +18,11 @@ export function dispatcher({messageType, messageValue}) {
 
 export function initialize() {
     worker = new Worker("worker.js", {type: "module"});
-    // worker.onmessage = dispatcher;
+    worker.onmessage = ({data}) => dispatcher(data);
     worker.postMessage({messageType: "initialize"});
+}
+
+if (navigator.userAgent !== "Happy DOM") {
+    // We are running in a browser, not in a test, so initialize.
+    initialize();
 }

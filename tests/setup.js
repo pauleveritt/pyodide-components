@@ -29,6 +29,8 @@ export const MockWorker = vi.fn(() => ({
     postMessage: vi.fn(),
 }));
 
+navigator.userAgent = "Happy DOM";
+
 if (!globalThis["worker"]) {
     vi.stubGlobal("Worker", MockWorker);
     self.postMessage = vi.fn();

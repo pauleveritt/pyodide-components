@@ -5,6 +5,10 @@ beforeEach(() => {
     document.body.innerHTML = `<span id="status"></span>`;
 });
 
+test("has correct user agent", () => {
+    expect(navigator.userAgent).to.equal("Happy DOM");
+});
+
 test("document has a status node", () => {
     const status = document.getElementById("status");
     expect(status).to.exist;

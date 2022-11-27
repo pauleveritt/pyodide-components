@@ -18,7 +18,10 @@ export async function initialize() {
 export async function dispatcher({messageType, messageValue}) {
     if (messageType === "initialize") {
         await initialize();
-        return {messageType: "initialized"};
+        return {
+            messageType: "initialized",
+            messageValue: "Pyodide app is initialized"
+        };
     }
     throw `No message handler for "${messageType}"`;
 }
