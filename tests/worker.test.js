@@ -48,5 +48,8 @@ test("handles incoming messages with onmessage", async () => {
     const spy = vi.spyOn(self, "postMessage");
     await self.onmessage(event);
 
-    expect(spy).toHaveBeenCalledWith({messageType: "initialized"});
+    expect(spy).toHaveBeenCalledWith({
+        messageType: "initialized",
+        messageValue: "Pyodide app is initialized",
+    });
 });
