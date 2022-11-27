@@ -1,6 +1,15 @@
-import {expect, test, vi} from "vitest";
-import {worker, initialize, messageHandlers, dispatcher} from "../src/pyodide_components/main.js";
+import {beforeEach, expect, test, vi} from "vitest";
+import {worker, initialize, messageHandlers, dispatcher, finishedInitialize} from "../src/pyodide_components/main.js";
 
+beforeEach(() => {
+    document.body.innerHTML = `<span id="status"></span>`;
+});
+
+test("document has a status node", () => {
+    const status = document.getElementById("status");
+    expect(status).to.exist;
+    expect(status.innerText).to.equal("");
+});
 
 test("has no initialized worker", () => {
     expect(Worker).to.exist;
@@ -27,4 +36,11 @@ test("dispatches to finishedInitialize", async () => {
     const msg = {messageType: "initialized", messageValue: "Pyodide app is initialized"};
     await dispatcher(msg);
     expect(spy).toHaveBeenCalledWith("Pyodide app is initialized");
+});
+
+test("updates document with initialized messageValue", async () => {
+    const status = document.getElementById("status");
+    const messageValue = "Loading is groovy";
+    await finishedInitialize(messageValue);
+    expect(status.innerText).to.equal(messageValue);
 });

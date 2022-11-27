@@ -1,7 +1,8 @@
 export let worker;
 
 export function finishedInitialize(messageValue) {
-    //
+    const status = document.getElementById("status");
+    status.innerText = messageValue;
 }
 
 export const messageHandlers = {
