@@ -24,8 +24,10 @@ export function finishedLoadApp(registryEntries) {
 export function finishedInitialize(messageValue) {
   const status = document.getElementById("status");
   status.innerText = messageValue;
+
   worker.postMessage({
     messageType: "load-app",
+    messageValue: { appName: "counter" },
   });
 }
 

@@ -1,8 +1,46 @@
 import { loadPyodide } from "./pyodide/pyodide.mjs";
 
-export async function loadApp() {
-  self.pyodide_components.initialize_app();
+export async function loadApp2({ appName }) {
+  let appContent;
+  const response = await fetch(`./${appName}.py`);
+  if (response.ok) {
+    appContent = await response.text();
+  } else {
+    console.log(`Failed to fetch ${appName}`);
+  }
+  self.pyodide.FS.writeFile(`${appName}.py`, appContent, { encoding: "utf8" });
+
+  // Python timestamp thing with MEMFS
+  // https://github.com/pyodide/pyodide/issues/737
+  self.pyodide.runPython("import importlib; importlib.invalidate_caches()");
+  const appModule = self.pyodide.pyimport(appName);
+
+  // Now register the app and update the local registry
+  self.pyodide_components.initialize_app(appModule);
   self.registry = self.pyodide_components.get_registry().toJs();
+
+  return { messageType: "finished-loadapp", messageValue: self.registry };
+}
+
+export async function loadApp({ appName }) {
+  let appContent;
+  const response = await fetch(`./${appName}.py`);
+  if (response.ok) {
+    appContent = await response.text();
+  } else {
+    console.log(`Failed to fetch ${appName}`);
+  }
+  self.pyodide.FS.writeFile(`${appName}.py`, appContent, { encoding: "utf8" });
+
+  // Python timestamp thing with MEMFS
+  // https://github.com/pyodide/pyodide/issues/737
+  self.pyodide.runPython("import importlib; importlib.invalidate_caches()");
+  const appModule = self.pyodide.pyimport(appName);
+
+  // Now register the app and update the local registry
+  self.pyodide_components.initialize_app(appModule);
+  self.registry = self.pyodide_components.get_registry().toJs();
+
   return { messageType: "finished-loadapp", messageValue: self.registry };
 }
 
@@ -41,7 +79,7 @@ export async function dispatcher({ messageType, messageValue }) {
       messageValue: "Pyodide app is initialized",
     };
   } else if (messageType === "load-app") {
-    return await loadApp();
+    return await loadApp(messageValue);
   }
   throw `No message handler for "${messageType}"`;
 }

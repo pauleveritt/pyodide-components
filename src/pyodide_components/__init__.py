@@ -1,5 +1,4 @@
 import re
-from dataclasses import dataclass
 from pathlib import Path
 
 HERE = Path(__file__).parent
@@ -18,18 +17,15 @@ def to_element_case(camel_str):
     return re.sub("([A-Z0-9])", r"-\1", camel_str).lower().lstrip("-")
 
 
-@dataclass
-class MyCounter:
-    pass
-
-
 def register(component):
     element_name = to_element_case(component.__name__)
     defined_elements[element_name] = component
 
 
-def initialize_app():
-    register(MyCounter)
+def initialize_app(app_module):
+    """Scan for known components and register them."""
+    setup_function = getattr(app_module, "setup_pyodide")
+    setup_function(register)
 
 
 def get_registry():

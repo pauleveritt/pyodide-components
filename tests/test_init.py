@@ -4,9 +4,9 @@ from pyodide_components import (
     to_element_case,
     defined_elements,
     register,
-    MyCounter,
     reset_registry,
     initialize_app,
+    counter,
 )
 
 
@@ -14,7 +14,7 @@ from pyodide_components import (
 def initialized_app():
     """Reset the registry and setup counter app."""
     reset_registry()
-    initialize_app()
+    initialize_app(counter)
 
 
 def test_reset_registry():
@@ -38,7 +38,7 @@ def test_initial_globals():
 
 def test_register_new_component():
     assert get_registry() == []
-    register(MyCounter)
+    register(counter.MyCounter)
     registry = get_registry()
     assert registry == [dict(name="my-counter")]
 
@@ -46,5 +46,5 @@ def test_register_new_component():
 def test_initialize_app():
     reset_registry()
     assert get_registry() == []
-    initialize_app()
+    initialize_app(counter)
     assert get_registry() == [dict(name="my-counter")]

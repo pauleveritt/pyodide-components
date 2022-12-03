@@ -86,7 +86,7 @@ test("initializes non-empty pyodide_components and registry", async () => {
 test("has MyCounter in registry", async () => {
   await initialize();
   expect(self.registry.length).to.equal(0);
-  await loadApp();
+  await loadApp({ appName: "counter" });
   expect(self.registry.length).to.equal(1);
   const myCounter = self.registry[0];
   expect(myCounter.get("name")).to.equal("my-counter");
@@ -94,7 +94,14 @@ test("has MyCounter in registry", async () => {
 
 test("processes a load-app message", async () => {
   await initialize();
-  const msg = { messageType: "load-app" };
+  const msg = { messageType: "load-app", messageValue: { appName: "counter" } };
+  const result = await dispatcher(msg);
+  expect(result.messageType).to.equal("finished-loadapp");
+});
+
+test("loads a counter app", async () => {
+  await initialize();
+  const msg = { messageType: "load-app", messageValue: { appName: "counter" } };
   const result = await dispatcher(msg);
   expect(result.messageType).to.equal("finished-loadapp");
 });
