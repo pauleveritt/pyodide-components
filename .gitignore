@@ -27,3 +27,4 @@ dist-ssr
 *.sw?
 
 src/pyodide_components/pyodide
+.pytest_cache

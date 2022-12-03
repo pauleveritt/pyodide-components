@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" type="image/svg+xml" href="./static/vite.svg"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Reset Pyodide State</title>
+    <script
+            defer
+            src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"
+    ></script>
+</head>
+<body>
+<h1>Reset Pyodide State</h1>
+<p>
+    Testing with Pyodide is slow. You have to make a new Pyodide on each test.
+    <em>Unless</em> you use the `reset_state` dance. Nice!
+</p>
+<p>Except that has an issue with `FS`. This page illustrates it.</p>
+<p>
+<div id="output"></div>
+</p>
+<script type="module">
+    const output = document.getElementById("output");
+    let pyodide = await loadPyodide();
+    const initialState = pyodide.pyodide_py._state.save_state();
+
+    // Pyodide works fine, as does FS
+    const result1 = pyodide.runPython(`1+1`);
+    output.innerText = result1;
+    pyodide.FS.mkdir("first");
+
+    // Restore state, try again. This part works.
+    pyodide.pyodide_py._state.restore_state(initialState);
+    const result2 = pyodide.runPython(`2+2`);
+    output.innerText = result2;
+    // But fails here.
+    pyodide.FS.mkdir("second");
+</script>
+</body>
+</html>

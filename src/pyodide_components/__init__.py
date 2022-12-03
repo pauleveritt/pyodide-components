@@ -5,4 +5,4 @@ STATIC = HERE / "static"
 
 
 def get_registry():
-    return [1, 2, 3]
+    return [dict(name="my-counter")]
