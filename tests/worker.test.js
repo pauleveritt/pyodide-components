@@ -1,5 +1,9 @@
 import { beforeEach, expect, test, vi } from "vitest";
-import { dispatcher, initialize } from "../src/pyodide_components/worker.js";
+import {
+  dispatcher,
+  initialize,
+  loadApp,
+} from "../src/pyodide_components/worker.js";
 import { loadPyodide } from "../src/pyodide_components/pyodide/pyodide.mjs";
 
 // Make an interpreter and capture its startup state
@@ -81,7 +85,16 @@ test("initializes non-empty pyodide_components and registry", async () => {
 
 test("has MyCounter in registry", async () => {
   await initialize();
+  expect(self.registry.length).to.equal(0);
+  await loadApp();
   expect(self.registry.length).to.equal(1);
   const myCounter = self.registry[0];
   expect(myCounter.get("name")).to.equal("my-counter");
+});
+
+test("processes a load-app message", async () => {
+  await initialize();
+  const msg = { messageType: "load-app" };
+  const result = await dispatcher(msg);
+  expect(result.messageType).to.equal("finished-loadapp");
 });

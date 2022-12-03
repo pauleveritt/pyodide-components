@@ -1,5 +1,11 @@
 import { loadPyodide } from "./pyodide/pyodide.mjs";
 
+export async function loadApp() {
+  self.pyodide_components.initialize_app();
+  self.registry = self.pyodide_components.get_registry().toJs();
+  return { messageType: "finished-loadapp", messageValue: self.registry };
+}
+
 export async function initialize() {
   if (!self.pyodide) {
     self.pyodide = await loadPyodide();
@@ -8,6 +14,10 @@ export async function initialize() {
   const response = await fetch("./__init__.py");
   if (response.ok) {
     const loaderContent = await response.text();
+    const pathInfo = self.pyodide.FS.analyzePath("pyodide_components");
+    if (!pathInfo.exists) {
+      self.pyodide.runPython("import os; os.mkdir('pyodide_components')");
+    }
     self.pyodide.FS.writeFile("pyodide_components/__init__.py", loaderContent, {
       encoding: "utf8",
     });
@@ -30,6 +40,8 @@ export async function dispatcher({ messageType, messageValue }) {
       messageType: "initialized",
       messageValue: "Pyodide app is initialized",
     };
+  } else if (messageType === "load-app") {
+    return await loadApp();
   }
   throw `No message handler for "${messageType}"`;
 }

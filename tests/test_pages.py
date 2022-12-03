@@ -17,3 +17,7 @@ def test_index(fake_page: Page):
     text = "Pyodide app is initialized"
     span = fake_page.wait_for_selector(f"#status:has-text('{text}')")
     assert span.text_content() == text
+
+    # Did the custom element render into the innerHTML?
+    my_counter = fake_page.wait_for_selector("my-counter em")
+    assert my_counter.text_content() == "my-counter"
