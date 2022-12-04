@@ -5,11 +5,13 @@ HERE = Path(__file__).parent
 STATIC = HERE / "static"
 
 defined_elements = {}
+db = {}
 
 
 def reset_registry():
     """Used by tests to put the globals back in original state."""
     defined_elements.clear()
+    db.clear()
 
 
 def to_element_case(camel_str):
@@ -20,6 +22,14 @@ def to_element_case(camel_str):
 def register(component):
     element_name = to_element_case(component.__name__)
     defined_elements[element_name] = component
+
+
+def make_element(uid, name):
+    """Receive message from JS and make a node"""
+    factory = defined_elements[name]
+    instance = factory(uid)
+    db[uid] = instance
+    return instance.render()
 
 
 def initialize_app(app_module):

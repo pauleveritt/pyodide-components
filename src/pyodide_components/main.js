@@ -1,3 +1,4 @@
+import * as Idiomorph from "./idiomorph.js";
 export let worker;
 
 export function makeCustomElement(name) {
@@ -5,10 +6,17 @@ export function makeCustomElement(name) {
     constructor() {
       super();
       this.name = name;
+      this.dataset.uid = "id" + Math.random().toString(16).slice(2);
     }
 
     connectedCallback() {
-      this.innerHTML = `<div>Element: <em>${this.name}</em></div>`;
+      // Tell Python we are attaching and create an instance
+      // and start the lifecycle.
+      const messageValue = {
+        uid: this.dataset.uid,
+        name: this.name,
+      };
+      worker.postMessage({ messageType: "make-element", messageValue });
     }
   };
 }
@@ -31,9 +39,15 @@ export function finishedInitialize(messageValue) {
   });
 }
 
+function renderNode({ uid, html }) {
+  const target = document.querySelector(`*[data-uid=${uid}]`);
+  Idiomorph.morph(target, html, { morphStyle: "innerHTML" });
+}
+
 export const messageHandlers = {
   initialized: finishedInitialize,
   "finished-loadapp": finishedLoadApp,
+  "render-node": renderNode,
 };
 
 export function dispatcher({ messageType, messageValue }) {

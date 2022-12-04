@@ -3,6 +3,7 @@ import {
   dispatcher,
   initialize,
   loadApp,
+  makeElement,
 } from "../src/pyodide_components/worker.js";
 import { loadPyodide } from "../src/pyodide_components/pyodide/pyodide.mjs";
 
@@ -104,4 +105,21 @@ test("loads a counter app", async () => {
   const msg = { messageType: "load-app", messageValue: { appName: "counter" } };
   const result = await dispatcher(msg);
   expect(result.messageType).to.equal("finished-loadapp");
+});
+
+test.only("makes a new element", async () => {
+  await initialize();
+  await loadApp({ appName: "counter" });
+  makeElement({ uid: "n123", name: "my-counter" });
+
+  const expected = {
+    messageType: "render-node",
+    messageValue: {
+      uid: "n123",
+      html: "<p><strong>Count</strong>: <span>0</span></p>",
+    },
+  };
+  expect(self.postMessage).toHaveBeenCalledWith(expected);
+  const thisDb = self.pyodide_components.db.toJs();
+  expect(thisDb.get("n123").uid).to.equal("n123");
 });

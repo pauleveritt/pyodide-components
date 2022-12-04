@@ -19,5 +19,5 @@ def test_index(fake_page: Page):
     assert span.text_content() == text
 
     # Did the custom element render into the innerHTML?
-    my_counter = fake_page.wait_for_selector("my-counter em")
-    assert my_counter.text_content() == "my-counter"
+    my_counter = fake_page.wait_for_selector("my-counter span")
+    assert my_counter.text_content() == "0"

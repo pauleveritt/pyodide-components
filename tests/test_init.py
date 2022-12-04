@@ -7,6 +7,8 @@ from pyodide_components import (
     reset_registry,
     initialize_app,
     counter,
+    make_element,
+    db,
 )
 
 
@@ -34,6 +36,7 @@ def test_to_element_case():
 
 def test_initial_globals():
     assert defined_elements == {}
+    assert db == {}
 
 
 def test_register_new_component():
@@ -48,3 +51,20 @@ def test_initialize_app():
     assert get_registry() == []
     initialize_app(counter)
     assert get_registry() == [dict(name="my-counter")]
+
+
+def test_make_and_update_element(initialized_app):
+    html = make_element("n123", "my-counter")
+    assert "<span>0" in html
+    my_counter = db["n123"]
+    my_counter.increment()
+    assert "<span>1" in my_counter.render()
+
+
+def test_make_and_update_element_with_prop(initialized_app):
+    """The node had an HTML attribute."""
+    html = make_element("n123", "my-counter")
+    assert "<span>0" in html
+    my_counter = db["n123"]
+    my_counter.increment()
+    assert "<span>1" in my_counter.render()
